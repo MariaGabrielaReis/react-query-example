@@ -1,5 +1,4 @@
-import { useEffect, useState } from 'react';
-import axios from 'axios';
+import { useAPI } from './hooks/useAPI';
 
 type Repository = {
   full_name: string;
@@ -7,16 +6,14 @@ type Repository = {
 };
 
 function App() {
-  const [repos, setRepos] = useState<Repository[]>([]);
+  const { data: repos, isLoading } = useAPI<Repository[]>(
+    'users/MariaGabrielaReis/repos'
+  );
 
-  useEffect(() => {
-    axios
-      .get('https://api.github.com/users/MariaGabrielaReis/repos')
-      .then(response => setRepos(response.data));
-  }, []);
   return (
     <ul>
-      {repos.map(repo => {
+      {isLoading && <p>Carregando...</p>}
+      {repos?.map(repo => {
         return (
           <li key={repo.full_name}>
             <strong>{repo.full_name}</strong>
